@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <title>LC→Obsidian 设置</title>
+  <style>
+    :root {
+      --bg: #1e1e2e;
+      --surface: #2a2a3c;
+      --text: #e0e0e0;
+      --muted: #8888a0;
+      --accent: #7c3aed;
+      --accent-hover: #6d28d9;
+      --danger: #ef4444;
+      --success: #10b981;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      padding: 24px;
+      min-width: 400px;
+    }
+    h1 { font-size: 18px; margin-bottom: 4px; }
+    .subtitle { color: var(--muted); font-size: 13px; margin-bottom: 24px; }
+
+    .field { margin-bottom: 20px; }
+    label { display: block; font-size: 13px; font-weight: 600; margin-bottom: 6px; color: var(--text); }
+    .hint { font-size: 11px; color: var(--muted); margin-top: 4px; }
+    .hint code { background: var(--surface); padding: 1px 5px; border-radius: 3px; font-size: 11px; }
+
+    input[type="text"],
+    input[type="password"] {
+      width: 100%;
+      padding: 10px 40px 10px 12px;
+      border: 1px solid #4a4a6a;
+      border-radius: 6px;
+      background: var(--surface);
+      color: var(--text);
+      font-size: 14px;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+    input:focus { border-color: var(--accent); }
+    .input-wrap { position: relative; }
+    .toggle-eye {
+      position: absolute; right: 8px; top: 50%; transform: translateY(-50%);
+      background: none; border: none; color: var(--muted); cursor: pointer;
+      font-size: 16px; padding: 4px; line-height: 1;
+    }
+    .toggle-eye:hover { color: var(--text); }
+
+    .row {
+      display: flex;
+      gap: 12px;
+    }
+    .row .field { flex: 1; }
+
+    button {
+      padding: 10px 24px;
+      background: var(--accent);
+      color: #fff;
+      border: none;
+      border-radius: 6px;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+    button:hover { background: var(--accent-hover); }
+
+    .status {
+      margin-top: 12px;
+      padding: 10px 12px;
+      border-radius: 6px;
+      font-size: 13px;
+      display: none;
+    }
+    .status.show { display: block; }
+    .status.ok { background: #064e3b; color: #6ee7b7; }
+    .status.err { background: #450a0a; color: #fca5a5; }
+
+    .divider {
+      border: none;
+      border-top: 1px solid #3a3a50;
+      margin: 24px 0;
+    }
+
+    .section-title {
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-bottom: 16px;
+    }
+  </style>
+</head>
+<body>
+  <h1>🔗 LeetCode → Obsidian</h1>
+  <p class="subtitle">提交 Accepted 后自动归类题型、写入 Obsidian</p>
+
+  <div class="section-title">DeepSeek API</div>
+
+  <div class="field">
+    <label for="deepseekKey">API Key</label>
+    <div class="input-wrap">
+      <input type="password" id="deepseekKey" placeholder="sk-...">
+      <button type="button" class="toggle-eye" data-target="deepseekKey" title="显示/隐藏">👁️</button>
+    </div>
+    <div class="hint">从 <a href="https://platform.deepseek.com/api_keys" target="_blank" style="color:var(--accent)">platform.deepseek.com</a> 获取</div>
+  </div>
+
+  <div class="field">
+    <label for="deepseekModel">模型</label>
+    <select id="deepseekModel" style="width:100%;padding:10px 12px;border:1px solid #4a4a6a;border-radius:6px;background:#2a2a3c;color:#e0e0e0;font-size:14px;outline:none;">
+      <option value="deepseek-v4-flash">DeepSeek V4 Flash（快，便宜）</option>
+      <option value="deepseek-v4-pro">DeepSeek V4 Pro（强，贵）</option>
+    </select>
+    <div class="hint">Flash 日常分类够用；V4 Pro 推理更强，刁钻题目用</div>
+  </div>
+
+  <hr class="divider">
+
+  <div class="section-title">Obsidian 连接</div>
+
+  <div class="field">
+    <label for="obsidianKey">Local REST API Key</label>
+    <div class="input-wrap">
+      <input type="password" id="obsidianKey" placeholder="Obsidian 插件设置里的 API Key">
+      <button type="button" class="toggle-eye" data-target="obsidianKey" title="显示/隐藏">👁️</button>
+    </div>
+    <div class="hint">安装 <code>Local REST API with MCP</code> → 设置里复制 Key → 粘贴后用 👁️ 确认</div>
+  </div>
+
+  <div class="row">
+    <div class="field">
+      <label for="obsidianUrl">Obsidian API 地址</label>
+      <input type="text" id="obsidianUrl" placeholder="http://127.0.0.1:27123" value="http://127.0.0.1:27123">
+      <div class="hint">HTTP 27123（需在插件设置中开启 Enable HTTP server）</div>
+    </div>
+    <div class="field">
+      <label for="vaultDir">题型目录</label>
+      <input type="text" id="vaultDir" placeholder="留空=根目录">
+      <div class="hint">Vault 内子目录路径。如果 vault 本身就是题型目录，留空即可</div>
+    </div>
+  </div>
+
+  <div style="display:flex; align-items:center; gap:12px;">
+    <button id="saveBtn">保存设置</button>
+    <button id="testBtn" style="background:var(--surface); color:var(--text); border:1px solid #4a4a6a;">测试连接</button>
+    <span id="status" class="status"></span>
+  </div>
+
+  <script>
+    // 👁️ 显示/隐藏 Key
+    document.querySelectorAll('.toggle-eye').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const input = document.getElementById(btn.dataset.target);
+        if (input.type === 'password') {
+          input.type = 'text';
+          btn.textContent = '🙈';
+        } else {
+          input.type = 'password';
+          btn.textContent = '👁️';
+        }
+      });
+    });
+  </script>
+  <script src="options.js"></script>
+</body>
+</html>
